@@ -124,6 +124,46 @@ Corsa *searchByStazPart(Corsa corse[], int n, char* str, int* nResults){
 
 }
 
+Corsa *searchByStazPart_bin(Corsa corse[], int n, char* str, int* nResults){
+	*nResults = 0;
+	size_t len = strlen(str);
+
+	Corsa *results = (Corsa *)malloc(sizeof(Corsa) * n);
+	
+	int pos,l = 0, r = n;
+	int found = 0;
+	while(!found){
+		if((r - l) <= 1){
+			return NULL;
+		}
+		pos = (l + r)/2;
+		int diff = strncmp(corse[pos].partenza, str, len);
+		if(diff == 0){
+			found = 1;
+		} 
+		else if (diff < 0){
+			l = pos;
+		}
+		else r = pos;
+		
+	}
+	if(found){
+		results[0] = corse[pos];
+		int lpos = pos, rpos = pos;
+		while(strncmp(corse[--lpos].partenza, str, len) == 0){
+			results[*nResults] = corse[lpos];
+			(*nResults)++;
+		}
+		while(strncmp(corse[++lpos].partenza, str, len) == 0){
+			results[*nResults] = corse[lpos];
+			(*nResults)++;
+		}
+		
+	}
+	return results;
+
+}
+
 
 
 int main() {
@@ -139,8 +179,8 @@ int main() {
     int nRighe = leggiFile(fin, corse);
 
 	int nResults;
-	
-	stampaCorse(searchByStazPart(corse, nRighe, "Pol", &nResults), nResults);
+	sortByStazPart(corse, nRighe);	
+	stampaCorse(searchByStazPart_bin(corse, nRighe, "Bra", &nResults), nResults);
 
     fclose(fin);
 	return 0;
