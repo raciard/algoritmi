@@ -169,7 +169,7 @@ Corsa *searchByStazPart_bin(Corsa corse[], int n, char* str, int* nResults){
 int main() {
     FILE* fin;
 
-
+	
     if((fin = fopen("log.txt", "r")) == NULL){
         printf("Errore nella lettura del file\n");
         return -1;
@@ -179,7 +179,10 @@ int main() {
     int nRighe = leggiFile(fin, corse);
 
 	int nResults;
+
 	sortByStazPart(corse, nRighe);	
+
+
 	stampaCorse(searchByStazPart_bin(corse, nRighe, "Bra", &nResults), nResults);
 
     fclose(fin);
