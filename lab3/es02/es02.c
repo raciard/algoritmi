@@ -41,6 +41,11 @@ int leggiFile(FILE* f, Livello** val){
 
 int main(){
 	FILE* fin = fopen("brani.txt", "r");
+	if(fin == NULL){
+		printf("Errore nella lettura del file\n");
+		return 0;
+	}
+
 	Livello* livelli;
 	int nLivelli = leggiFile(fin, &livelli);
 	int* sol = malloc(sizeof(int) * nLivelli);
