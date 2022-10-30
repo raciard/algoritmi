@@ -37,7 +37,7 @@ char *charMatch(char src, char *currentRegPos) {
             }
             return currentRegPos;
         }else {
-            int found = NULL;
+            int found = 0;
             while (*(++currentRegPos) != ']') {
                 if (*currentRegPos == src)
                     found = 1;

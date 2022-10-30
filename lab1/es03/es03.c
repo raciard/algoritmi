@@ -13,8 +13,15 @@ typedef struct {
     int ritardo;
 } Corsa;
 
-typedef enum {r_date, r_partenza, r_capolinea,
-    r_ritardo, r_ritardo_tot, r_fine, r_err = -1} comando_e;
+typedef enum {r_ritardo_sort, r_data_sort, r_stazArr_sort,
+    r_codice_sort, r_stazPart_sort, r_fine, r_err = -1} comando_e;
+
+
+void menuParola(comando_e comando, Corsa corse[], int nRighe);
+
+comando_e leggicomando(char comando[]);
+
+
 
 int leggiFile(FILE* f, Corsa corse[]){
     int nRighe = 0;
@@ -179,14 +186,79 @@ int main() {
     int nRighe = leggiFile(fin, corse);
 
 	int nResults;
-
-	sortByStazPart(corse, nRighe);	
-
-
-	stampaCorse(searchByStazPart_bin(corse, nRighe, "Bra", &nResults), nResults);
+	
+	char comando[100];
+	comando_e c;
+	do{
+	scanf("%s", comando);
+	
+	c = leggicomando(comando);
+	menuParola(c, corse, nRighe);
+	}while(c != r_fine);
 
     fclose(fin);
 	return 0;
 
 }
 
+
+
+
+
+
+
+void menuParola(comando_e comando, Corsa corse[], int nRighe) {
+    switch (comando) {
+        case r_ritardo_sort: {
+			printf("\nOrdino per ritardo... \n");
+			sortByRitardo(corse, nRighe);
+			stampaCorse(corse, nRighe);
+			break;
+        }
+        case r_data_sort: {
+			printf("\nOrdino per data... \n");
+			sortByData(corse, nRighe);
+			stampaCorse(corse, nRighe);
+
+            break;
+        }
+        case r_stazArr_sort: {
+			printf("\nOrdino per stazione di arrivo... \n");
+			sortByStazArr(corse, nRighe);
+			stampaCorse(corse, nRighe);
+            break;
+        }
+        case r_stazPart_sort: {
+			printf("\nOrdino per stazione di partenza... \n");
+			sortByStazPart(corse, nRighe);
+			stampaCorse(corse, nRighe);
+
+            break;
+        }
+        case r_codice_sort: {
+			printf("\nOrdino per codice corsa... \n");
+			sortByCodice(corse, nRighe);
+			stampaCorse(corse, nRighe);
+            break;
+        }
+		case r_fine: { 
+			break;
+		}
+        case r_err: {
+            printf("Il comando che hai inserito non è valido!");
+        }
+    }
+}
+
+
+comando_e leggicomando(char comando[]){
+
+    char *tabella[r_fine + 1]={
+            "ritsort","datasort","arrsort","codsort","partsort","fine" 
+    };
+    for(int i = 0; i <= r_fine; i++){
+        if(strcmp(tabella[i], comando) == 0)
+            return i;
+    }
+    return r_err;
+}
