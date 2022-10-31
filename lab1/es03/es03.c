@@ -14,7 +14,7 @@ typedef struct {
 } Corsa;
 
 typedef enum {r_ritardo_sort, r_data_sort, r_stazArr_sort,
-    r_codice_sort, r_stazPart_sort, r_fine, r_err = -1} comando_e;
+    r_codice_sort, r_stazPart_sort,r_ricerca_bin, r_ricerca_lin, r_help, r_fine,r_err = -1} comando_e;
 
 
 void menuParola(comando_e comando, Corsa corse[], int nRighe);
@@ -156,19 +156,19 @@ Corsa *searchByStazPart_bin(Corsa corse[], int n, char* str, int* nResults){
 	}
 	if(found){
 		results[0] = corse[pos];
+        (*nResults) = 1;
 		int lpos = pos, rpos = pos;
-		while(strncmp(corse[--lpos].partenza, str, len) == 0){
+		while(lpos > 0 && strncmp(corse[--lpos].partenza, str, len) == 0){
 			results[*nResults] = corse[lpos];
 			(*nResults)++;
 		}
-		while(strncmp(corse[++lpos].partenza, str, len) == 0){
-			results[*nResults] = corse[lpos];
+		while(rpos < (n-1) && strncmp(corse[++rpos].partenza, str, len) == 0){
+			results[*nResults] = corse[rpos];
 			(*nResults)++;
-		}
+		}	
 		
 	}
 	return results;
-
 }
 
 
@@ -190,10 +190,12 @@ int main() {
 	char comando[100];
 	comando_e c;
 	do{
-	scanf("%s", comando);
+		printf("Inserire un comando (\"h\" per istruzioni): \n");
 	
-	c = leggicomando(comando);
-	menuParola(c, corse, nRighe);
+		scanf("%s", comando);
+		
+		c = leggicomando(comando);
+		menuParola(c, corse, nRighe);
 	}while(c != r_fine);
 
     fclose(fin);
@@ -244,6 +246,39 @@ void menuParola(comando_e comando, Corsa corse[], int nRighe) {
 		case r_fine: { 
 			break;
 		}
+		case r_help:{
+			printf("\nOrdinamenti: \n"
+					"\t per Ritardo: ritsort\n"
+					"\t per Data: datasort\n"
+					"\t per Stazione di arrivo: arrsort\n"
+					"\t per Stazione di partenza: partsort\n"
+					"\t per Codice: codsort\n"
+					"Ricerca stazione partenza: \n"
+					"\t ricerca lineare: riclin\n"
+					"\t ricerca binaria: ricbin\n"
+					"Per terminare il programma: fine\n\n");
+			break;
+
+		}
+		case r_ricerca_bin:{
+			char query[MAXS];
+			int nResults;
+			sortByStazPart(corse, nRighe);
+			printf("Inserire la stazione di partenza da cercare: \n");
+			scanf(" %s", query);
+			Corsa* results =searchByStazPart_bin(corse, nRighe, query, &nResults);
+			stampaCorse(results, nResults);
+			break;
+		}
+		case r_ricerca_lin:{
+			char query[MAXS];
+			int nResults;
+			printf("Inserire la stazione di partenza da cercare: \n");
+			scanf(" %s", query);
+			Corsa* results =searchByStazPart(corse, nRighe, query, &nResults);
+			stampaCorse(results, nResults);
+		   	break;
+	    }
         case r_err: {
             printf("Il comando che hai inserito non è valido!");
         }
@@ -254,7 +289,8 @@ void menuParola(comando_e comando, Corsa corse[], int nRighe) {
 comando_e leggicomando(char comando[]){
 
     char *tabella[r_fine + 1]={
-            "ritsort","datasort","arrsort","codsort","partsort","fine" 
+            "ritsort","datasort","arrsort","codsort","partsort","ricbin",
+			"riclin","h", "fine" 
     };
     for(int i = 0; i <= r_fine; i++){
         if(strcmp(tabella[i], comando) == 0)

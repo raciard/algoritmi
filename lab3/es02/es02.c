@@ -6,7 +6,7 @@ typedef struct {char **scelte; int num_scelte; } Livello;
 int princ_molt(int pos, Livello *val, int *sol,int n, int cnt) { 
 	int i;
 	if (pos >= n) {
-        printf("Playlist #%d: ", cnt);
+        printf("Playlist #%d: ", cnt + 1);
 		for (i = 0; i < n; i++)
 		  printf(" %s ", val[i].scelte[sol[i]]);
 		printf("\n");
@@ -51,6 +51,7 @@ int main(){
 	int* sol = malloc(sizeof(int) * nLivelli);
 	int nSol = princ_molt(0, livelli,sol,nLivelli, 0);
 	printf("\nGenerate %d playlist\n", nSol);
+	fclose(fin);
 }
 
 

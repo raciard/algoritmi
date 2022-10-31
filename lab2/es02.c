@@ -55,6 +55,10 @@ void printM(int ** mat, int nr, int nc){
 	printf("\n");
 }
 
+void freeMatrix(int** mat, int nr){
+	for(int i = 0; i < nr; i++)
+		free(mat[i]);
+}
 
 int main(){
 	FILE* file = fopen("mat.txt", "r");
@@ -72,5 +76,8 @@ int main(){
 	for(int i =0; i < nb; i++)
 		printf("%d ", black[i]);
 
+	free(black);
+	free(white);
+	
 
 }
